@@ -2,20 +2,39 @@ const express = require('express');
 const morgan = require('morgan');
 const createError = require('http-errors');
 require("dotenv").config();
-
+require("./helpers/init_mongodb");
+/*
+ * import auth route
+**/
 const AuthRoute = require("./Routes/Auth.routes");
 
+/*
+ * init express
+**/
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
+/*
+ * log the request into the console
+**/
+app.use(morgan('dev'));
 
 app.get("/", async(req, res, next) => {
     res.send("Hello Form Node Auth");
 });
 
+/*
+ * init auth route to the express router
+**/
 app.use('/auth', AuthRoute);
 
-
+/*
+ * set default not found error
+**/
 app.use(async(req, res, next) => {
-    next(createError.NotFound());
+    next(createError.NotFound("Unable to access route."));
 });
 
 
