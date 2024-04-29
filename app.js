@@ -3,6 +3,8 @@ const morgan = require('morgan');
 const createError = require('http-errors');
 require("dotenv").config();
 require("./helpers/init_mongodb");
+const { verifyAccessToken } = require("./helpers/jwt_helper/jwt_helper");
+
 /*
  * import auth route
 **/
@@ -21,8 +23,12 @@ app.use(express.urlencoded({extended: true}));
 **/
 app.use(morgan('dev'));
 
-app.get("/", async(req, res, next) => {
-    res.send("Hello Form Node Auth");
+app.get("/", verifyAccessToken, async(req, res, next) => {
+    try {
+        res.send("Hello from express");
+    } catch (e) {
+        next(e);
+    }
 });
 
 /*
