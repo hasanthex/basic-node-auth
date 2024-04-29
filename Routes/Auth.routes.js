@@ -57,7 +57,12 @@ router.post('/login', async(req, res, next) => {
 });
 
 router.post('/refresh-token', async(req, res, next) => {
-    res.send("Refresh Token Route");
+    try {
+        console.log(req.body);
+        res.send(`Refresh Token Route ${req.body}`);
+    }catch (e) {
+        next(e);
+    }
 });
 
 router.delete('/logout', async(req, res, next) => {
