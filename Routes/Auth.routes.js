@@ -3,7 +3,7 @@ const createError  = require("http-errors");
 const router = express.Router();
 const User = require("./../Models/User.model");
 const { authSchema } = require("./../helpers/validation/user_validation_schema");
-const { signAccessToken, signRefreshToken } = require("./../helpers/jwt_helper/jwt_helper");
+const { signAccessToken, signRefreshToken, verifyRefreshToken } = require("./../helpers/jwt_helper/jwt_helper");
 
 router.post('/register', async(req, res, next) => {
     try {
@@ -58,9 +58,15 @@ router.post('/login', async(req, res, next) => {
 
 router.post('/refresh-token', async(req, res, next) => {
     try {
-        console.log(req.body);
-        res.send(`Refresh Token Route ${req.body}`);
-    }catch (e) {
+        const { refreshToken } = req.body;
+        if(!refreshToken) throw createError.BadRequest();
+
+        const uid = await verifyRefreshToken(refreshToken);
+        const accessToken = await signAccessToken(uid);
+        const refToken = await signRefreshToken(uid);
+
+        res.send({accessToken, refreshToken: refToken});
+    } catch (e) {
         next(e);
     }
 });

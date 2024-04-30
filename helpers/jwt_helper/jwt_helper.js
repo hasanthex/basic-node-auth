@@ -10,7 +10,7 @@ module.exports = {
             };
             const secret = process.env.ACCESS_TOKEN_SECRET;
             const options = {
-                expiresIn: "1h",
+                expiresIn: "20s",
                 issuer: "http://127.0.0.1:3000"
             };
 
@@ -61,4 +61,12 @@ module.exports = {
         });
     },
 
+    verifyRefreshToken: (refreshToken) => {
+        return new Promise((resolve, reject) => {
+            JWT.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, payload) => {
+               if(err) return reject(createError.Unauthorized());
+               resolve(payload.aud);
+            });
+        });
+    }
 };
