@@ -25,7 +25,7 @@ const UserSchema = new Schema({
     }
 });
 
-/*
+/**
  * mongoose middleware before create new user
 **/
 UserSchema.pre("save", async function(next){

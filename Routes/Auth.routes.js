@@ -11,10 +11,10 @@ router.post('/register', async(req, res, next) => {
 
         // if(!email || !password) throw createError.BadRequest("Email or Password Missing");
         const result = await authSchema.validateAsync(req.body);
-
+        
         const userExists = await User.findOne({email: result.email});
 
-        if(userExists) throw createError.Conflict(`${result.email} already exists`);
+        if(userExists) throw createError.Conflict(`The email ${result.email} already exists`);
 
         const user = new User({
             email: result.email,
